@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soroban — Abacus Arithmetic Calculator</title>
+<style>
+  :root {
+    --frame-wood: #7a4a2b;
+    --frame-wood-dark: #5c3520;
+    --rod-color: #3a2415;
+    --bar-color: #241a12;
+    --bead-inactive: #d8b88a;
+    --bead-inactive-shade: #b3915f;
+    --bead-active: #e8c34a;
+    --bead-active-shade: #b8912a;
+    --bg: #f4ede3;
+    --panel-bg: #ffffff;
+    --ink: #2b2118;
+    --accent: #c0442a;
+    --good: #2e7d32;
+    --bad: #c0392b;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 24px 16px 60px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    letter-spacing: 0.02em;
+  }
+  .subtitle {
+    margin-top: -12px;
+    font-size: 0.85rem;
+    color: #6b5c4a;
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 960px;
+  }
+
+  /* ── Controls ───────────────────────────────────────────── */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    align-items: flex-end;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #7a6a55;
+    font-weight: 600;
+  }
+  .field input[type="number"] {
+    width: 90px;
+    padding: 7px 9px;
+    border: 1px solid #d8cdbb;
+    border-radius: 8px;
+    font-size: 0.95rem;
+  }
+  .field.grow input[type="number"] { width: 140px; }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: var(--ink);
+    color: #fff;
+    transition: transform 0.08s ease, opacity 0.15s ease;
+  }
+  button:hover { opacity: 0.88; }
+  button:active { transform: scale(0.97); }
+  button.secondary { background: #efe6d6; color: var(--ink); }
+  button.accent { background: var(--accent); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    padding-bottom: 8px;
+  }
+
+  /* ── Value display ──────────────────────────────────────── */
+  .value-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .value-display {
+    font-family: 'Consolas', 'SFMono-Regular', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    min-width: 200px;
+  }
+  .value-display.hidden-value {
+    filter: blur(8px);
+    user-select: none;
+  }
+  .value-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: #7a6a55;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+
+  /* ── Soroban frame ───────────────────────────────────────── */
+  .frame-scroll {
+    width: 100%;
+    max-width: 960px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+  .frame {
+    position: relative;
+    display: inline-flex;
+    background: linear-gradient(180deg, var(--frame-wood), var(--frame-wood-dark));
+    border-radius: 10px;
+    padding: 10px 14px 4px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25), inset 0 0 0 3px rgba(0,0,0,0.15);
+  }
+
+  .rod {
+    position: relative;
+    width: 42px;
+    height: 290px;
+    flex: 0 0 auto;
+  }
+
+  .rod-stick {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    transform: translateX(-50%);
+    background: var(--rod-color);
+    border-radius: 2px;
+  }
+
+  .heaven-zone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 90px;
+  }
+  .earth-zone {
+    position: absolute;
+    top: 106px;
+    left: 0;
+    right: 0;
+    height: 160px;
+  }
+
+  .bead {
+    position: absolute;
+    left: 50%;
+    width: 36px;
+    height: 24px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--bead-inactive);
+    border: 1px solid var(--bead-inactive-shade);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+    cursor: pointer;
+    transition: top 0.14s ease-out, background-color 0.15s ease;
+    z-index: 2;
+  }
+  .bead.active {
+    background: var(--bead-active);
+    border-color: var(--bead-active-shade);
+  }
+  .bead:hover { filter: brightness(1.1); }
+  .bead:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+  .reckoning-bar {
+    position: absolute;
+    left: -14px;
+    right: -14px;
+    top: 93px;
+    height: 6px;
+    background: var(--bar-color);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.4);
+    z-index: 1;
+  }
+
+  .unit-dot {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.55);
+  }
+
+  .place-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: #6b5c4a;
+    white-space: nowrap;
+  }
+
+  .decimal-sep {
+    position: absolute;
+    top: -8px;
+    bottom: -4px;
+    width: 2px;
+    background: var(--accent);
+    left: 0;
+    border-radius: 2px;
+  }
+
+  /* ── Practice mode ───────────────────────────────────────── */
+  .practice-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .problem-text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    font-family: 'Consolas', monospace;
+  }
+  .feedback {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .feedback.good { color: var(--good); }
+  .feedback.bad { color: var(--bad); }
+  .score {
+    font-size: 0.8rem;
+    color: #6b5c4a;
+    margin-left: auto;
+  }
+
+  footer {
+    font-size: 0.72rem;
+    color: #9a8a72;
+    text-align: center;
+    max-width: 700px;
+  }
+</style>
+</head>
+<body>
+
+  <h1>🧮 Soroban — Abacus Arithmetic Calculator</h1>
+  <p class="subtitle">Click the beads to move them. Upper bead = 5, each lower bead = 1.</p>
+
+  <div class="panel controls">
+    <div class="field">
+      <label for="rodCount">Rods</label>
+      <input type="number" id="rodCount" min="3" max="27" value="13">
+    </div>
+    <div class="field">
+      <label for="decimalPlaces">Decimal places</label>
+      <input type="number" id="decimalPlaces" min="0" max="10" value="0">
+    </div>
+    <button id="rebuildBtn" class="secondary">Rebuild</button>
+    <button id="resetBtn" class="secondary">Reset Beads</button>
+
+    <div class="field grow">
+      <label for="setValueInput">Set value</label>
+      <input type="number" id="setValueInput" step="any" placeholder="e.g. 3057">
+    </div>
+    <button id="setValueBtn">Set on Abacus</button>
+
+    <label class="checkbox-field">
+      <input type="checkbox" id="hideValueToggle">
+      Hide value (quiz mode)
+    </label>
+  </div>
+
+  <div class="panel value-row">
+    <div>
+      <div class="value-label">Current value</div>
+      <div class="value-display" id="valueDisplay">0</div>
+    </div>
+    <div id="valueError" style="color:var(--bad); font-size:0.85rem;"></div>
+  </div>
+
+  <div class="frame-scroll">
+    <div class="frame" id="frame"></div>
+  </div>
+
+  <div class="panel">
+    <div class="practice-row">
+      <button id="newProblemBtn" class="accent">🎲 New Practice Problem</button>
+      <button id="checkAnswerBtn" class="secondary">✅ Check Answer</button>
+      <div class="problem-text" id="problemText">Click "New Practice Problem" to start</div>
+      <div class="feedback" id="feedbackText"></div>
+      <div class="score" id="scoreText">Score: 0 / 0</div>
+    </div>
+  </div>
+
+  <footer>
+    Standalone HTML/CSS/JS tool. A small API is exposed on <code>window.SorobanAPI</code>
+    (getValue, setValue, reset, getScore, onChange) for wiring into a PHP backend later
+    (e.g. saving student results, teacher-set practice problems, session monitoring).
+  </footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // ── State ────────────────────────────────────────────────
+  let rods = [];        // [{ heaven: bool, earth: 0-4 }]
+  let decimalPlaces = 0;
+  let score = { correct: 0, total: 0 };
+  let currentProblem = null; // { a, b, op, answer }
+  const changeListeners = [];
+
+  const frameEl = document.getElementById('frame');
+  const valueDisplayEl = document.getElementById('valueDisplay');
+  const valueErrorEl = document.getElementById('valueError');
+  const hideValueToggle = document.getElementById('hideValueToggle');
+  const problemTextEl = document.getElementById('problemText');
+  const feedbackTextEl = document.getElementById('feedbackText');
+  const scoreTextEl = document.getElementById('scoreText');
+
+  const ROD_WIDTH = 42;
+  const HEAVEN_H = 90;
+  const BEAD_H = 24;
+  // Earth zone is sized for 5 bead-slots but only holds 4 beads — the extra
+  // slot is real travel room. Without it, a resting bead's position and its
+  // activated position compute to the exact same pixel value, so clicking
+  // would change the state but nothing would visibly move.
+  const SLOT_H = 32;
+  const EARTH_H = SLOT_H * 5;
+
+  // ── Build ────────────────────────────────────────────────
+  function buildSoroban(count, decimals) {
+    count = Math.max(3, Math.min(27, count | 0));
+    decimals = Math.max(0, Math.min(count - 1, decimals | 0));
+
+    rods = Array.from({ length: count }, () => ({ heaven: false, earth: 0 }));
+    decimalPlaces = decimals;
+
+    frameEl.innerHTML = '';
+    const unitsIndex = count - 1 - decimals; // rod index that represents "ones"
+
+    for (let p = 0; p < count; p++) {
+      const rod = document.createElement('div');
+      rod.className = 'rod';
+      rod.style.width = ROD_WIDTH + 'px';
+
+      const stick = document.createElement('div');
+      stick.className = 'rod-stick';
+      rod.appendChild(stick);
+
+      const heavenZone = document.createElement('div');
+      heavenZone.className = 'heaven-zone';
+      heavenZone.style.height = HEAVEN_H + 'px';
+      const heavenBead = document.createElement('div');
+      heavenBead.className = 'bead heaven-bead';
+      heavenBead.tabIndex = 0;
+      heavenBead.setAttribute('role', 'button');
+      heavenBead.setAttribute('aria-label', 'Heaven bead (value 5)');
+      heavenBead.dataset.place = String(p);
+      heavenZone.appendChild(heavenBead);
+      rod.appendChild(heavenZone);
+
+      const bar = document.createElement('div');
+      bar.className = 'reckoning-bar';
+      rod.appendChild(bar);
+
+      // Decimal-point separator drawn to the LEFT of the first fractional rod
+      if (decimals > 0 && p === unitsIndex + 1) {
+        const sep = document.createElement('div');
+        sep.className = 'decimal-sep';
+        rod.appendChild(sep);
+      }
+
+      const earthZone = document.createElement('div');
+      earthZone.className = 'earth-zone';
+      earthZone.style.top = (HEAVEN_H + 16) + 'px';
+      earthZone.style.height = EARTH_H + 'px';
+      for (let i = 0; i < 4; i++) {
+        const eb = document.createElement('div');
+        eb.className = 'bead earth-bead';
+        eb.tabIndex = 0;
+        eb.setAttribute('role', 'button');
+        eb.setAttribute('aria-label', 'Earth bead (value 1)');
+        eb.dataset.place = String(p);
+        eb.dataset.slot = String(i);
+        earthZone.appendChild(eb);
+      }
+      rod.appendChild(earthZone);
+
+      // Reference dot every 3 rods, counted from the units rod outward
+      if ((unitsIndex - p) % 3 === 0) {
+        const dot = document.createElement('div');
+        dot.className = 'unit-dot';
+        rod.appendChild(dot);
+      }
+
+      // Place-value label (10^n), shown every 3rd rod for orientation
+      if ((unitsIndex - p) % 3 === 0) {
+        const label = document.createElement('div');
+        label.className = 'place-label';
+        const exp = unitsIndex - p;
+        label.textContent = exp === 0 ? '1' : ('10^' + exp);
+        rod.appendChild(label);
+      }
+
+      frameEl.appendChild(rod);
+    }
+
+    render();
+  }
+
+  // ── Rendering (positions beads based on state) ──────────
+  function render() {
+    // Heaven beads
+    frameEl.querySelectorAll('.heaven-bead').forEach((el) => {
+      const p = Number(el.dataset.place);
+      const active = rods[p].heaven;
+      el.classList.toggle('active', active);
+      el.style.top = (active ? (HEAVEN_H - BEAD_H) : 4) + 'px';
+      el.setAttribute('aria-pressed', String(active));
+    });
+
+    // Earth beads
+    frameEl.querySelectorAll('.earth-bead').forEach((el) => {
+      const p = Number(el.dataset.place);
+      const slot = Number(el.dataset.slot);
+      const activeCount = rods[p].earth;
+      const isActive = slot < activeCount;
+      el.classList.toggle('active', isActive);
+      let top;
+      if (isActive) {
+        top = slot * SLOT_H + 4;
+      } else {
+        const downGroupTop = EARTH_H - (4 - activeCount) * SLOT_H;
+        top = downGroupTop + (slot - activeCount) * SLOT_H + 4;
+      }
+      el.style.top = top + 'px';
+      el.setAttribute('aria-pressed', String(isActive));
+    });
+
+    updateValueDisplay();
+    notifyChange();
+  }
+
+  // ── Value math ───────────────────────────────────────────
+  function computeValue() {
+    const count = rods.length;
+    const unitsIndex = count - 1 - decimalPlaces;
+    let total = 0;
+    for (let p = 0; p < count; p++) {
+      const rodValue = (rods[p].heaven ? 5 : 0) + rods[p].earth;
+      const exponent = unitsIndex - p;
+      total += rodValue * Math.pow(10, exponent);
+    }
+    // Round away floating point noise (e.g. 0.1 + 0.2 issues)
+    return Math.round(total * 1e10) / 1e10;
+  }
+
+  function formatValue(v) {
+    return decimalPlaces > 0 ? v.toFixed(decimalPlaces) : String(v);
+  }
+
+  function updateValueDisplay() {
+    const v = computeValue();
+    valueDisplayEl.textContent = formatValue(v);
+    valueDisplayEl.classList.toggle('hidden-value', hideValueToggle.checked);
+  }
+
+  function notifyChange() {
+    const v = computeValue();
+    changeListeners.forEach((fn) => { try { fn(v); } catch (e) { /* ignore listener errors */ } });
+  }
+
+  // ── Setting a value onto the beads ──────────────────────
+  function setValue(num) {
+    valueErrorEl.textContent = '';
+    if (typeof num !== 'number' || !isFinite(num)) {
+      valueErrorEl.textContent = 'Enter a valid number.';
+      return false;
+    }
+    if (num < 0) {
+      valueErrorEl.textContent = 'Negative numbers are not supported on the abacus.';
+      return false;
+    }
+
+    const count = rods.length;
+    const unitsIndex = count - 1 - decimalPlaces;
+    const maxValue = Math.pow(10, unitsIndex + 1) - Math.pow(10, -decimalPlaces);
+    if (num > maxValue) {
+      valueErrorEl.textContent = 'That number is too large for ' + count + ' rods with ' + decimalPlaces + ' decimal place(s).';
+      return false;
+    }
+
+    // Work in integer "smallest units" to avoid float rounding issues.
+    const scaled = Math.round(num * Math.pow(10, decimalPlaces));
+    let remaining = scaled;
+    const digits = [];
+    for (let p = count - 1; p >= 0; p--) {
+      digits[p] = remaining % 10;
+      remaining = Math.floor(remaining / 10);
+    }
+
+    for (let p = 0; p < count; p++) {
+      const d = digits[p] || 0;
+      rods[p].heaven = d >= 5;
+      rods[p].earth = d % 5;
+    }
+
+    render();
+    return true;
+  }
+
+  function resetBeads() {
+    rods = rods.map(() => ({ heaven: false, earth: 0 }));
+    valueErrorEl.textContent = '';
+    render();
+  }
+
+  // ── Bead interaction ─────────────────────────────────────
+  function toggleHeaven(place) {
+    rods[place].heaven = !rods[place].heaven;
+    render();
+  }
+
+  function clickEarthSlot(place, slot) {
+    const current = rods[place].earth;
+    rods[place].earth = (slot < current) ? slot : slot + 1;
+    render();
+  }
+
+  frameEl.addEventListener('click', (e) => {
+    const bead = e.target.closest('.bead');
+    if (!bead) return;
+    const place = Number(bead.dataset.place);
+    if (bead.classList.contains('heaven-bead')) {
+      toggleHeaven(place);
+    } else {
+      clickEarthSlot(place, Number(bead.dataset.slot));
+    }
+  });
+
+  frameEl.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const bead = e.target.closest('.bead');
+    if (!bead) return;
+    e.preventDefault();
+    bead.click();
+  });
+
+  // ── Practice mode ────────────────────────────────────────
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function newProblem() {
+    const count = rods.length;
+    const unitsIndex = count - 1 - decimalPlaces;
+    // Keep practice numbers reasonable regardless of how large the abacus is.
+    const maxOperand = Math.min(999, Math.pow(10, Math.max(1, unitsIndex)) - 1);
+
+    const op = Math.random() < 0.5 ? '+' : '-';
+    let a = randomInt(1, maxOperand);
+    let b = randomInt(1, maxOperand);
+    if (op === '-' && b > a) { const t = a; a = b; b = t; } // keep result non-negative
+
+    const answer = op === '+' ? a + b : a - b;
+    currentProblem = { a, b, op, answer };
+
+    problemTextEl.textContent = a + ' ' + op + ' ' + b + ' = ?';
+    feedbackTextEl.textContent = '';
+    feedbackTextEl.className = 'feedback';
+    resetBeads();
+  }
+
+  function checkAnswer() {
+    if (!currentProblem) {
+      feedbackTextEl.textContent = 'Start a new problem first.';
+      feedbackTextEl.className = 'feedback bad';
+      return;
+    }
+    const current = computeValue();
+    score.total += 1;
+    if (Math.abs(current - currentProblem.answer) < 1e-9) {
+      score.correct += 1;
+      feedbackTextEl.textContent = '✅ Correct!';
+      feedbackTextEl.className = 'feedback good';
+    } else {
+      feedbackTextEl.textContent = '❌ Not quite — correct answer was ' + currentProblem.answer + '.';
+      feedbackTextEl.className = 'feedback bad';
+    }
+    scoreTextEl.textContent = 'Score: ' + score.correct + ' / ' + score.total;
+  }
+
+  // ── Controls wiring ──────────────────────────────────────
+  document.getElementById('rebuildBtn').addEventListener('click', () => {
+    const n = Number(document.getElementById('rodCount').value) || 13;
+    const d = Number(document.getElementById('decimalPlaces').value) || 0;
+    buildSoroban(n, d);
+    currentProblem = null;
+    problemTextEl.textContent = 'Click "New Practice Problem" to start';
+    feedbackTextEl.textContent = '';
+    scoreTextEl.textContent = 'Score: ' + score.correct + ' / ' + score.total;
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', resetBeads);
+
+  document.getElementById('setValueBtn').addEventListener('click', () => {
+    const raw = document.getElementById('setValueInput').value;
+    setValue(Number(raw));
+  });
+  document.getElementById('setValueInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('setValueBtn').click();
+  });
+
+  hideValueToggle.addEventListener('change', updateValueDisplay);
+
+  document.getElementById('newProblemBtn').addEventListener('click', newProblem);
+  document.getElementById('checkAnswerBtn').addEventListener('click', checkAnswer);
+
+  // ── Public API (for later PHP/JS integration) ───────────
+  window.SorobanAPI = {
+    getValue: computeValue,
+    setValue: setValue,
+    reset: resetBeads,
+    rebuild: buildSoroban,
+    getScore: () => ({ ...score }),
+    getCurrentProblem: () => currentProblem ? { ...currentProblem } : null,
+    onChange: (fn) => { if (typeof fn === 'function') changeListeners.push(fn); },
+  };
+
+  // ── Init ─────────────────────────────────────────────────
+  buildSoroban(13, 0);
+})();
+</script>
+</body>
+</html>

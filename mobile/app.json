@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "InveztIN",
+    "slug": "inveztin-shop",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.inveztin.shop",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.inveztin.shop",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-image",
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ],
+    "scheme": "inveztin",
+    "extra": {
+      "apiBaseUrl": "https://mvc-ecom-be.vercel.app/api/v1",
+      "router": {},
+      "eas": {
+        "projectId": "31f8b444-6d7a-4563-8ffe-ecc4b77d6680"
+      }
+    }
+  }
+}

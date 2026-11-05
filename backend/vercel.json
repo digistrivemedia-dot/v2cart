@@ -1,0 +1,20 @@
+{
+    "builds": [
+      {
+        "src": "server.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/.*",
+        "dest": "server.js"
+      }
+    ],
+    "crons": [
+      {
+        "path": "/api/v1/cron/mature-settlements",
+        "schedule": "0 2 * * *"
+      }
+    ]
+  }

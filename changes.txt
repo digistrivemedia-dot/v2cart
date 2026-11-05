@@ -1,0 +1,15 @@
+1. In vendor page product upload from price input field need like if vendor put 120 price then their billow or someware in the UI show that vendor will recive 100 then taht 20 rupee or 20% is the plateform changes. (plateform change will decide by admin not vendor, vendor can only see his recivable, plateform changes, and after gst how much will be total for customars) so vendor will put 100 which is his product price and it will show 120 + gst how much for customar that show and hwo much for investor that also need to show.
+
+2. after uplaoding based on how fast that proudct got sold they will be sift to three category a) high margin, b) medium margin, c) low margin. high margin products are those who sold suppose in 24hr, medium is 30days, and low is 3month now this numbers will be static, admin will able to set this timings. 
+
+prompt: in admin put a category option based on this three a) high margin, b) medium margin, c) low margin. admin will set time for seperate category means suppose in website there is four category like electronic, fashion, kitchen, and health, now admin will decide which category will be having what sold duration suppose electronic admin set 15days high margin, 1 month medium, 3 month low. and fashion admin set 5days high margin, 20days medium, 3 month low like that so every category will have there diffrent duration for high low and medium margin and that will fully control by admin. so did you understand this change and ask me if you have any dought
+
+
+3. in investor earnings put more filter like high low margins, etc so they can analyze there earnings to understand there invesment more.
+
+4. invesment card is too long in hight so put dropdown for that green area and that other area so investor can open the dropdown and see so with all that data card size/hight will small.
+
+5. whallate feature so investor will put money in his whallate and invest from that, and for refund that refund money will go to whallate and investor will withdrow form there only.
+
+6. put all % number in gold font colors.
+

@@ -1,0 +1,132 @@
+"use client";
+
+import { useCallback, Suspense, useRef, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+
+function SearchInputContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const prevParams = useRef(searchParams.toString());
+
+  // Reset loading when navigation completes
+  useEffect(() => {
+    const current = searchParams.toString();
+    if (current !== prevParams.current) {
+      prevParams.current = current;
+      setIsSearching(false);
+    }
+  }, [searchParams]);
+
+  // Safety timeout — always clear after 8s
+  useEffect(() => {
+    if (!isSearching) return;
+    const timer = setTimeout(() => setIsSearching(false), 8000);
+    return () => clearTimeout(timer);
+  }, [isSearching]);
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleChange = useCallback(
+    (term: string) => {
+      // Clear existing timer
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      // Set new timer to debounce the navigation
+      debounceTimerRef.current = setTimeout(() => {
+        const currentQ = searchParams.get('q') || '';
+        const newQ = term.trim();
+        if (newQ === currentQ) return; // Same query — skip
+        setIsSearching(true);
+        if (newQ) {
+          router.replace(`/search?q=${encodeURIComponent(newQ)}`);
+        } else {
+          router.replace("/search");
+        }
+      }, 500); // Wait 500ms after user stops typing
+    },
+    [router]
+  );
+
+  return (
+    <div className="flex w-full border border-[#2E2E2E] rounded-md overflow-hidden relative">
+      {isSearching && (
+        <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10 rounded-md">
+          <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      <span className="h-[40px] w-[40px] px-3 flex items-center justify-center">
+        <svg
+          data-testid="geist-icon"
+          height="16"
+          strokeLinejoin="round"
+          viewBox="0 0 16 16"
+          width="16"
+          style={{ color: "currentcolor" }}
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M1.5 6.5C1.5 3.73858 3.73858 1.5 6.5 1.5C9.26142 1.5 11.5 3.73858 11.5 6.5C11.5 9.26142 9.26142 11.5 6.5 11.5C3.73858 11.5 1.5 9.26142 1.5 6.5ZM6.5 0C2.91015 0 0 2.91015 0 6.5C0 10.0899 2.91015 13 6.5 13C8.02469 13 9.42677 12.475 10.5353 11.596L13.9697 15.0303L14.5 15.5607L15.5607 14.5L15.0303 13.9697L11.596 10.5353C12.475 9.42677 13 8.02469 13 6.5C13 2.91015 10.0899 0 6.5 0Z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </span>
+      <input
+        placeholder="Search Products..."
+        aria-label="Search"
+        className="w-full h-[40px] px-3 bg-background-secondary text-color-secondary text-sm focus:outline-none"
+        type="search"
+        defaultValue={searchParams.get("q")?.toString()}
+        onChange={(e) => handleChange(e.target.value)}
+      />
+    </div>
+  );
+}
+
+export const SearchInput = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex w-full border border-[#2E2E2E] rounded-md overflow-hidden">
+          <span className="h-[40px] w-[40px] px-3 flex items-center justify-center">
+            <svg
+              data-testid="geist-icon"
+              height="16"
+              strokeLinejoin="round"
+              viewBox="0 0 16 16"
+              width="16"
+              style={{ color: "currentcolor" }}
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M1.5 6.5C1.5 3.73858 3.73858 1.5 6.5 1.5C9.26142 1.5 11.5 3.73858 11.5 6.5C11.5 9.26142 9.26142 11.5 6.5 11.5C3.73858 11.5 1.5 9.26142 1.5 6.5ZM6.5 0C2.91015 0 0 2.91015 0 6.5C0 10.0899 2.91015 13 6.5 13C8.02469 13 9.42677 12.475 10.5353 11.596L13.9697 15.0303L14.5 15.5607L15.5607 14.5L15.0303 13.9697L11.596 10.5353C12.475 9.42677 13 8.02469 13 6.5C13 2.91015 10.0899 0 6.5 0Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </span>
+          <input
+            placeholder="Search Products..."
+            aria-label="Search"
+            className="w-full h-[40px] px-3 bg-background-secondary text-sm focus:outline-none"
+            type="search"
+            disabled
+          />
+        </div>
+      }
+    >
+      <SearchInputContent />
+    </Suspense>
+  );
+};

@@ -1,0 +1,15 @@
+{
+  "name": "investin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "InveztIN - an e-commerce marketplace where investors fund vendor stock and earn a share when it sells.",
+  "scripts": {
+    "dev": "npx concurrently -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:mobile": "npm --prefix mobile start",
+    "install:all": "npm --prefix backend install && npm --prefix frontend install && npm --prefix mobile install",
+    "check": "npm --prefix backend run check:unit",
+    "check:all": "npm --prefix backend run check"
+  }
+}

@@ -1,0 +1,3 @@
+DEPLOYMENT TEST - Generated at 2026-01-28 01:45 IST
+This file was created to verify Vercel is deploying the latest code.
+If you see this file at https://your-domain.vercel.app/deployment-test.txt then deployment is working.

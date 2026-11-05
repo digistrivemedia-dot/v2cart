@@ -1,0 +1,400 @@
+================================================================================
+           TILES E-COMMERCE & INVESTMENT MARKETPLACE - TESTING GUIDE
+================================================================================
+
+HOW TO RUN THE APPLICATION LOCALLY:
+-----------------------------------
+1. In workspace root (/Users/rohanmalo/Desktop/digistrive/mvc-ecommerce):
+     npm run dev
+   (Or in two separate terminals:
+      Terminal 1: cd backend && npm start        --> Port 4000
+      Terminal 2: cd tilesecommerse && npm run dev  --> Port 3000
+   )
+
+2. Open your browser and navigate to:
+     http://localhost:3000
+
+
+================================================================================
+1. COMMON LOGIN & REGISTRATION
+================================================================================
+- Login URL:        http://localhost:3000/login
+- Registration URL: http://localhost:3000/register
+
+How it works:
+- Any user logs in at http://localhost:3000/login.
+- The system checks your role and redirects you automatically:
+    * role: 'superadmin' or 'admin' --> /admin
+    * role: 'vendor'                --> /vendor
+    * role: 'investor'              --> /investor
+    * role: 'user' (customer)       --> /
+
+
+================================================================================
+2. SUPERADMIN DASHBOARD
+================================================================================
+- URL:              http://localhost:3000/admin
+- Test Email:       admin@test.com
+- Test Password:    Password123
+
+Key Pages & Features:
+- Overview:         http://localhost:3000/admin
+                    Summary cards of products, orders, customers, and revenue.
+
+- Vendor Approval:  http://localhost:3000/admin/vendors
+                    View newly registered vendors (GST, business name, bank/UPI details).
+                    Click "Approve" or "Reject" to enable their product creation.
+
+- Investor Approval: http://localhost:3000/admin/investors
+                    View registered investors and payout details.
+                    Click "Approve" or "Reject" to allow them to fund units.
+
+- Products & Pricing: http://localhost:3000/admin/products
+                    View all products. Click "Edit" on a vendor-submitted product.
+                    Superadmin controls 4 financial numbers:
+                      1. vendorPrice (vendor's base cost)
+                      2. customerPrice (retail price shown on storefront)
+                      3. investorPrice (unit cost an investor pays)
+                      4. investorPayout (fixed amount returned to investor)
+                    Live Margin Readout: Shows superadmin profit per unit.
+                    Listing Status: Toggle between 'draft', 'pending_approval', 'live', 'paused'.
+
+- Financial Reports: http://localhost:3000/admin/reports
+                    Live audited ledger showing:
+                      * Total platform profit
+                      * Total vendor payouts
+                      * Total investor payouts
+                      * Full transaction breakdown by date
+
+- Orders:           http://localhost:3000/admin/orders
+                    View all customer orders and manage fulfillment status.
+
+
+================================================================================
+3. VENDOR DASHBOARD
+================================================================================
+- URL:              http://localhost:3000/vendor
+- Test Email:       vendor@test.com
+- Test Password:    Password123
+
+Key Pages & Features:
+- Overview:         http://localhost:3000/vendor
+                    Overview cards: products listed, units sold, pending approval count, lifetime income.
+
+- Products List:    http://localhost:3000/vendor/products
+                    Shows only products owned by this vendor with their status (draft, live, pending).
+
+- Add New Product:  http://localhost:3000/vendor/products/create
+                    Vendor form: Enter name, category, description, stock, specifications,
+                    and 'vendorPrice' (vendor's cost price).
+                    Note: Vendor CANNOT set the retail price or publish live directly;
+                    the product enters superadmin review as 'draft'.
+
+- Orders:           http://localhost:3000/vendor/orders
+                    Shows line items ordered by customers for this vendor's products.
+
+- Income & Ledger:  http://localhost:3000/vendor/income
+                    Ledger of all earned money per product sale.
+
+
+================================================================================
+4. INVESTOR DASHBOARD
+================================================================================
+- URL:              http://localhost:3000/investor
+- Test Email:       investor@test.com
+- Test Password:    Password123
+
+Key Pages & Features:
+- Overview:         http://localhost:3000/investor
+                    Total capital invested, total returns paid, active unmatched units.
+
+- Invest Products:  http://localhost:3000/investor/products
+                    Storefront-style catalog showing live products open for funding.
+                    Displays "Invest ₹[investorPrice]" button instead of "Add to Cart".
+                    Shows expected return ("Get ₹[investorPayout]").
+                    Clicking "Invest" funds 1 unit and places it in the FIFO queue.
+
+- My Investments:   http://localhost:3000/investor/investments
+                    List of funded units with real-time status:
+                      * 'Unmatched': Waiting for a customer to buy this unit.
+                      * 'Matched': A customer bought this unit; payout is triggered.
+
+- Earnings:         http://localhost:3000/investor/earnings
+                    History of payouts received from completed customer sales.
+
+
+================================================================================
+5. CUSTOMER STOREFRONT
+================================================================================
+- URL:              http://localhost:3000
+- Test Email:       Any registered customer account, or register fresh at /register
+
+Key Pages & Features:
+- Storefront:       http://localhost:3000
+                    Browse tiles and categories (pre-seeded with 78 categories/subcategories).
+                    Only products with listingStatus = 'live' are displayed.
+
+- Product Detail:   http://localhost:3000/[category]/[id]
+                    Shows retail price, variants, specifications, tile calculator, and reviews.
+
+- Cart & Checkout:  http://localhost:3000/cart and http://localhost:3000/checkout
+                    Standard purchase flow. When a payment is captured:
+                      1. Stock decrements by ordered quantity.
+                      2. If an investor funded a unit of that product, the oldest investment
+                         is matched (FIFO) and paid out.
+                      3. Vendor receives their vendorPrice credit.
+                      4. Superadmin retains the net profit margin.
+                      5. Audited ledger records all movements in the Transaction table.
+
+- Customer Profile: http://localhost:3000/profile
+                    Customer addresses, order history, and account settings.
+
+
+================================================================================
+6. RECOMMENDED END-TO-END TEST FLOW
+================================================================================
+Step 1: Log in as Vendor (vendor@test.com / Password123)
+        --> Go to /vendor/products/create and add a new tile product with vendorPrice = 500.
+
+Step 2: Log out and log in as Superadmin (admin@test.com / Password123)
+        --> Go to /admin/products, open the new product.
+        --> Set customerPrice = 1200, investorPrice = 400, investorPayout = 550.
+        --> Change status to 'live' and save.
+
+Step 3: Log out and log in as Investor (investor@test.com / Password123)
+        --> Go to /investor/products, find the product.
+        --> Click "Invest ₹400".
+        --> Go to /investor/investments to confirm status is "Unmatched".
+
+Step 4: Check Storefront (http://localhost:3000)
+        --> The product is visible to customers at ₹1200 with full details.
+
+
+================================================================================
+PHASE 21 — RETURN WINDOWS GATE SETTLEMENT (added 2026-11-04)
+================================================================================
+
+WHAT CHANGED, IN ONE LINE:
+  Nobody is paid at checkout any more. The vendor and the investor are paid
+  once the customer's return window closes with nothing sent back.
+
+  A sale now only MATCHES the investor's unit. The money moves later.
+
+
+THE ONE THING THAT MAKES THIS HARD TO TEST
+------------------------------------------
+A 7-day window is correct and completely unclickable: mark an order delivered,
+the admin queue says "releases in 7 days", and "Release due payouts" rightly
+does nothing. Two ways around it:
+
+  EASY  — give a product a 0-day window. Admin -> product -> Edit -> Admin
+          Pricing -> Return window -> "Refund or replacement", days = 0.
+          It then pays out the moment you mark the order Delivered.
+
+  REAL  — use the full 7-day flow and fast-forward the clock:
+
+            cd backend
+            node scripts/closeReturnWindow.js            # lists what is held
+            node scripts/closeReturnWindow.js <orderId>  # make it due now
+
+          Then click "Release due payouts" in Admin -> Reports. The script only
+          backdates the release date; the real release path still moves all the
+          money, so you are testing the actual thing.
+
+
+FULL WALKTHROUGH
+----------------
+ADMIN — set the policy
+  1. Admin -> Products -> pick a pending product -> Edit
+  2. "Admin Pricing" panel -> scroll to "Return window". Three choices:
+       Refund or replacement  -> HOLDS the money for N days after delivery
+       Replacement only       -> paid at delivery (a swap costs the vendor a
+                                 unit, not the platform cash)
+       No return              -> paid at delivery (RAM, memory cards)
+  3. Set days (default 7; try 3 on one product and 7 on another)
+  4. Save Pricing, then Approve. The approve dialog now spells out BOTH the
+     margin bands and the return window before you confirm.
+  5. Global default: Admin -> Settings -> pricing bar (7-day full return).
+
+CUSTOMER — sees it before buying
+  6. Open that product on the storefront. Under Add to Cart there is now a
+     return line: "7-day returns", "Replacement only", or "Not returnable".
+  7. Buy it.
+
+INVESTOR — the money is visibly not theirs yet
+  8. Invest in that product first (Investor -> Products -> the card now says
+     "Paid N days after delivery" under the payout range).
+  9. After the customer buys: Investor -> Investments shows the unit as
+     "In return period" with the release date, and an "In return period" tile.
+     Investor -> Earnings shows it as a separate figure from Total Returned.
+     It is NOT in their wallet.
+
+VENDOR — knows why they have not been paid
+ 10. Vendor dashboard -> "Awaiting release" card: the amount, the unit count,
+     the next release date, and a warning for orders not yet marked delivered.
+
+ADMIN — deliver, then release
+ 11. Admin -> Orders -> the order -> set Shipped.
+     Admin -> Reports now warns: "N shipped orders not marked delivered" —
+     the return clock has not started, so nothing can pay out.
+ 12. Set Delivered. The clock starts. Admin -> Reports -> "In return period"
+     lists the line with its release date.
+ 13. Fast-forward (see above) -> "Release due payouts".
+     Vendor income becomes real, the investor's principal returns to capital
+     and the profit lands in earnings.
+
+RETURNS
+ 14. On a Delivered order, Orders -> status now offers "Returned (refund)" and
+     "Replaced (swap unit)" — Delivered is no longer a dead end.
+ 15. Returned  -> customer refunded the full charge INCLUDING GST, nobody is
+     paid, and the investor's unit goes back in the pool to sell again. It
+     pays out on the NEXT sale of that product.
+ 16. Replaced  -> no money moves. The sale stands, one more unit leaves stock,
+     and the line still matures on its original schedule.
+ 17. A "No return" product refuses to be marked Returned at all.
+
+AUTOMATIC RELEASE
+ 18. A cron hits /api/v1/cron/mature-settlements daily at 02:00 (vercel.json).
+     Guarded by CRON_SECRET in backend/config/config.env — already set here.
+     Trigger it by hand:
+       curl -X POST http://localhost:4000/api/v1/cron/mature-settlements \
+            -H "x-cron-secret: $(grep '^CRON_SECRET=' backend/config/config.env | cut -d= -f2)"
+     Safe to run repeatedly: a settled line is never paid twice.
+
+
+WHAT WILL *NOT* HAPPEN (verified, not assumed)
+----------------------------------------------
+  - Your 9 existing Confirmed orders were already paid out by the old code.
+    Marking them Delivered will NOT pay anyone a second time — settlement
+    checks the ledger, and all 14 of their lines are covered.
+  - Releasing twice, or the cron overlapping the button, pays once.
+  - A refund hands back the full charge (141.60 on a 120 tile), not 120.
+  - A 7-day wait does NOT bump the investor into a better band. Their rate is
+    measured from the SALE, so an 8-day hold pays 5% even though the money
+    arrives 7 days later.
+
+
+CHECKS YOU CAN RUN
+------------------
+  cd backend
+  node utils/returnPolicy.js            # the policy rules
+  node utils/settlement.js              # the dates and the guards
+  node scripts/returnWindow.check.js    # 6 money scenarios, real DB
+  node scripts/returnWindow.http.js     # 18 endpoint/auth assertions (server up)
+  node scripts/returnWindow.e2e.js      # 64 assertions, all four roles (server up)
+  node scripts/wallet.check.js --reconcile
+
+
+================================================================================
+SAVED ADDRESSES — CHECKOUT PREFILL (added 2026-11-04, CUSTOMERS ONLY)
+================================================================================
+
+WHAT WAS ALREADY THERE, AND WHAT WAS MISSING
+  The backend address book (add / edit / delete / set-default) and the checkout
+  address PICKER both already existed. What never existed was checkout WRITING
+  to the book — so a customer typed their address every single order, and the
+  picker had nothing to pick unless they had added one by hand in Profile.
+
+  One change: checkout now saves the address it just shipped to.
+
+HOW TO TEST
+  1. Log in as a customer with no saved address. Add something to the cart and
+     go to Checkout.
+  2. The address form is empty (nothing saved yet). Fill it in. At the bottom
+     there is now a checkbox, ticked by default:
+         [x] Save this address for next time
+  3. Place the order. (The address is saved AFTER the order succeeds — if the
+     save ever fails it is logged and ignored, never allowed to fail a paid
+     order.)
+  4. Go back to Checkout with another item. The saved address now appears under
+     "Select a saved address", is auto-selected because it is the default, and
+     the form is already filled in. Nothing to retype.
+  5. Click "Use a new address" -> the form clears and the checkbox reappears.
+     Save a second one. The first stays the default; the second does not steal
+     it.
+  6. Profile -> Addresses: add, edit, delete, and "Set as default" all work.
+     Changing the default changes which one checkout preselects.
+
+NOTES
+  - Addresses are stored flattened: addressLine1 + addressLine2 + landmark
+    become the one `address` string the order itself ships to, so selecting a
+    saved address refills the street line with exactly what was delivered to
+    last time.
+  - Saving the same address twice is skipped (matched on address + pincode).
+  - The API (/me/addresses/*) is logged-in-only, not customer-role-only. The
+    feature is only SURFACED at checkout and on the customer profile, which is
+    where it is needed — no vendor or investor screen touches it.
+
+CHECK YOU CAN RUN
+  cd backend && node scripts/address.check.js    # 20 assertions (server up)
+
+
+================================================================================
+CANCEL / RETURN REQUESTS — CUSTOMER ASKS, ADMIN DECIDES (added 2026-11-04)
+================================================================================
+
+WHAT CHANGED
+  The customer order page had no actions at all — cancelling or returning was
+  admin-only. Now the customer asks and admin approves or rejects. Approving
+  runs the same money flows admin's manual status change already ran.
+
+WHICH BUTTON APPEARS, AND WHEN
+  not delivered yet  ->  "Cancel order"       (reason text only)
+  delivered          ->  "Return or replace"  (items + reason + photos)
+  cancelled/returned ->  neither, with a line explaining why
+
+  Each refuses the other: a cancel after delivery and a return before it are
+  both rejected by the API, not just hidden in the UI.
+
+WALKTHROUGH — A CANCELLATION
+  1. As a customer, place an order. Open /orders/<id>.
+  2. "Changed your mind?" -> Cancel order. Type a reason. Send.
+  3. The panel becomes "Cancellation request under review". Try again — a
+     second request is refused while one is pending.
+  4. As admin, /admin/orders now shows an amber "Requests (1)" chip and an
+     amber dot + "request waiting" on that row. Click the chip to filter.
+  5. Open the order. The request panel sits above the status manager with the
+     customer's message. Approve -> the order is Cancelled and stock restored.
+
+WALKTHROUGH — A RETURN
+  6. Place another order on a 7-day product. Admin: Shipped -> Delivered.
+  7. Customer: /orders/<id> -> "Return or replace".
+       - tick the items (pre-ticked when there is only one)
+       - pick Refund or Replacement — only shown when the product allows BOTH
+       - type what is wrong
+       - drag in up to 5 photos (JPEG/PNG/WebP, 5MB each) — optional
+  8. Admin opens the order: the message, the items, and the photos (click to
+     enlarge). Approve -> customer refunded the full charge including GST,
+     nobody is paid, the investor's unit goes back in the pool.
+  9. Decline instead -> a note is REQUIRED and the customer is shown it. The
+     order is untouched, and the customer cannot submit another request on it.
+
+POLICY-DRIVEN OPTIONS (set per product in Admin Pricing)
+  Refund or replacement  -> customer picks
+  Replacement only       -> no choice offered; asking for a refund is refused
+  No return              -> the item is LISTED in the form but greyed out with
+                            the reason, so the customer learns why
+
+THE IMPORTANT BIT — PAYOUTS FREEZE WHILE A REQUEST IS PENDING
+  A pending request stops that order maturing, even if its window has closed.
+  Without it: customer requests on day 6, cron pays the vendor and investor on
+  day 7, admin approves on day 8 and the refund has to claw back money that is
+  already gone.
+
+  To see it: request a return, then
+      node backend/scripts/closeReturnWindow.js <orderId>
+      (admin) Reports -> "Release due payouts"
+  Nothing pays out, and the queue shows it as awaiting a decision. Decide the
+  request and it unfreezes — a rejection lets the next release pay normally.
+
+ALSO FIXED HERE
+  Replacement-only products previously had NO window — they became
+  un-swappable the moment they were delivered, which defeated the policy. The
+  money still settles at delivery (nothing to refund), but the customer now has
+  real days to report a fault. Admin Pricing shows "Days to report a fault" for
+  that policy.
+
+CHECKS YOU CAN RUN
+  cd backend
+  node utils/orderRequest.js                 # the eligibility rules
+  node scripts/orderRequest.check.js         # 48 assertions, both roles (server up)
