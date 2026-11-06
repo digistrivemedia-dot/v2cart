@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -78,13 +78,13 @@ export const BlogSection = () => {
     };
 
     return (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-gradient-to-b from-white to-gray-50">
+        <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             {/* Section Header */}
-            <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
+            <div className="text-center mb-4">
+                <h2 className="text-lg sm:text-xl font-bold text-slate-800">
                     Latest from Our Blog
                 </h2>
-                <p className="text-slate-600 text-lg max-w-2xl mx-auto">
+                <p className="text-xs text-slate-500 max-w-2xl mx-auto">
                     Expert tips, design inspiration, and industry insights to help you make
                     the best choices
                 </p>
@@ -96,7 +96,7 @@ export const BlogSection = () => {
                     {[1, 2, 3].map((i) => (
                         <div
                             key={i}
-                            className="bg-white rounded-2xl shadow-md overflow-hidden animate-pulse"
+                            className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse"
                         >
                             <div className="h-56 bg-gray-200" />
                             <div className="p-6 space-y-3">
@@ -137,7 +137,7 @@ export const BlogSection = () => {
                         <Link
                             key={blog._id}
                             href={`/blogs/${blog.slug}`}
-                            className="group block bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-2"
+                            className="group block bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-2"
                         >
                             <article>
                                 {/* Blog Image */}

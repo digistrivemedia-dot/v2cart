@@ -79,12 +79,5 @@ export function vendorPriceBreakdown(
     gstAmount: gst,
     /** What the customer is charged at checkout. */
     customerTotal: total,
-    /** An investor funds a unit at the vendor's net. */
-    investorPays: round2(net),
-    // What an investor RECEIVES is deliberately absent. It used to be the
-    // listing price, making their profit exactly the margin; since Phase 20 it
-    // is a band percentage of what they paid, decided by how long their unit
-    // took to sell, so no single number here could be honest. The admin pricing
-    // panel shows the full range — see ProductPricingPanel.
   };
 }

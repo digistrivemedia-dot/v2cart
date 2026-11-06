@@ -11,13 +11,11 @@ const ROLE_FILTERS: { id: PaymentRole | "all"; label: string }[] = [
   { id: "all", label: "All" },
   { id: "customer", label: "Customer" },
   { id: "vendor", label: "Vendor" },
-  { id: "investor", label: "Investor" },
 ];
 
 const ROLE_BADGE: Record<PaymentRole, string> = {
   customer: "bg-blue-100 text-blue-700",
   vendor: "bg-orange-100 text-orange-700",
-  investor: "bg-emerald-100 text-emerald-700",
 };
 
 function PaymentsPanel() {

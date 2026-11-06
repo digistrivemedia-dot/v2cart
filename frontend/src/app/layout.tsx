@@ -11,13 +11,13 @@ import "@/styles/colors.css";
 import "@/styles/animations.css";
 
 export const metadata: Metadata = {
-  title: "InveztIN - Infinite Potential. Zero Risk.",
-  description: "Buy, sell, and invest — all in one marketplace.",
-  keywords: "marketplace, ecommerce, investing, vendors, online shopping",
+  title: "V2Cart - Your Online Marketplace.",
+  description: "Buy and sell — all in one marketplace.",
+  keywords: "marketplace, ecommerce, vendors, online shopping",
   icons: {
-    icon: '/favicon.png',
-    shortcut: '/favicon.png',
-    apple: '/favicon.png',
+    icon: '/logo.jpeg',
+    shortcut: '/logo.jpeg',
+    apple: '/logo.jpeg',
   },
 };
 

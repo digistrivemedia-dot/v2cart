@@ -28,7 +28,7 @@ export const AddToCartButton = ({ productId, size }: AddToCartButtonProps) => {
         <button
             onClick={handleAddToCart}
             disabled={isAdding}
-            className="px-6 py-3 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 disabled:opacity-50"
+            className="px-6 py-3 bg-brand-gold text-white font-semibold rounded-lg hover:bg-brand-gold-light transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2 disabled:opacity-50"
         >
             <FiShoppingCart className="w-5 h-5" />
             {isAdding ? 'Adding...' : 'Add to Cart'}

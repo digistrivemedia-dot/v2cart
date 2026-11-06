@@ -27,7 +27,7 @@ export const Footer = () => {
             {/* Logo */}
             <div className="mb-4">
               <Image
-                src="/logo.png"
+                src="/logo.jpeg"
                 alt={`${config.appName} Logo`}
                 width={96}
                 height={96}

@@ -73,8 +73,7 @@ export function SettlementQueue() {
                 {awaitingDeliveryMark.length === 1 ? "" : "s"} not marked delivered
               </h3>
               <p className="mt-1 text-xs text-amber-800">
-                The return window starts at delivery, so these are not paying
-                their vendors or investors yet. Mark them Delivered once they
+                The return window starts at delivery, so vendors are not paid yet. Mark them Delivered once they
                 have arrived — nothing releases until you do.
               </p>
               <ul className="mt-3 space-y-1.5">
@@ -109,8 +108,7 @@ export function SettlementQueue() {
               In return period
             </h3>
             <p className="mt-0.5 text-xs text-slate-500">
-              Sold units whose money is not released yet. Vendors and investors
-              are paid when each window closes.
+              Sold units whose money is not released yet. Vendors are paid when each window closes.
             </p>
           </div>
 
@@ -142,7 +140,6 @@ export function SettlementQueue() {
                   <th className="py-2 pr-4 font-medium">Product</th>
                   <th className="py-2 pr-4 font-medium">Delivered</th>
                   <th className="py-2 pr-4 font-medium">Releases</th>
-                  <th className="py-2 pr-4 font-medium">Funded</th>
                   <th className="py-2 pr-5 font-medium">Policy</th>
                 </tr>
               </thead>
@@ -185,9 +182,6 @@ export function SettlementQueue() {
                           </span>
                         </span>
                       )}
-                    </td>
-                    <td className="py-2.5 pr-4 tabular-nums text-slate-700">
-                      {line.fundedUnits > 0 ? `${line.fundedUnits} unit(s)` : "—"}
                     </td>
                     <td className="py-2.5 pr-5 text-xs text-slate-500">
                       {POLICY_LABEL[line.returnPolicy] ?? line.returnPolicy}

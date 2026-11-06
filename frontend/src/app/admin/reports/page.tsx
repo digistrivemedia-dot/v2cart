@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { HiCash, HiTrendingUp, HiCurrencyRupee, HiChartBar } from "react-icons/hi";
+import { HiCash, HiChartBar } from "react-icons/hi";
 import { SettlementQueue } from "@/components/admin/SettlementQueue";
 import { RoleGuard } from "@/components/RoleGuard";
 import { useTransactionsSummary } from "@/hooks/admin";
@@ -9,9 +9,6 @@ import { useTransactionsSummary } from "@/hooks/admin";
 const TYPE_LABEL: Record<string, string> = {
   vendor_earning: "Vendor Earnings",
   vendor_reversal: "Vendor Reversals",
-  investor_investment: "Investor Capital Placed",
-  investor_payout: "Investor Payouts",
-  investor_reversal: "Investor Reversals",
   platform_profit: "Platform Profit",
   platform_reversal: "Platform Reversals",
 };
@@ -23,8 +20,6 @@ function ReportsContent() {
 
   const cards = [
     { label: "Vendor Payouts", value: totals.vendorPayouts, icon: HiCash, color: "bg-blue-500" },
-    { label: "Investor Capital Placed", value: totals.investorInvested, icon: HiTrendingUp, color: "bg-emerald-500" },
-    { label: "Investor Payouts", value: totals.investorPayouts, icon: HiCurrencyRupee, color: "bg-purple-500" },
     { label: "Platform Profit", value: totals.platformProfit, icon: HiChartBar, color: "bg-orange-500" },
   ];
 

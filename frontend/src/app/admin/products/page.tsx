@@ -644,48 +644,19 @@ export default function AdminProductsPage() {
     return result.product;
   };
 
-  // Approving from the list publishes with whatever margin rules the product
-  // already resolves to — its own, or the platform defaults. Those numbers are
-  // spelled out first rather than applied silently: approval is the moment the
-  // investor's return is decided, and admin should see it even when they are
-  // just accepting the defaults. Different numbers for this one product are set
-  // on its edit page.
   const handleApprove = async (productId: string, productName: string) => {
     const product = products.find((p) => p._id === productId);
-    const bands = product?.marginBands;
 
-    if (bands) {
-      const lines = (['low', 'medium', 'high'] as const)
-        .map((k) =>
-          `  ${k.padEnd(7)} `
-          + (k === 'high' ? `over ${bands.medium.days}d` : `within ${bands[k].days}d`)
-          + ` → investor earns ${bands[k].pct}%`
-        )
-        .join('\n');
+    const policy = product?.returnPolicy ?? 'full';
+    const windowDays = product?.returnWindowDays ?? 7;
+    const releaseLine = policy === 'full'
+      ? `paid out ${windowDays} day${windowDays === 1 ? '' : 's'} after delivery`
+      : `paid out at delivery (${policy === 'none' ? 'no return' : 'replacement only'})`;
 
-      // Phase 21 — WHEN the money is released, shown next to how much it is.
-      // Approval is the one moment admin sees both halves of the deal.
-      const policy = product?.returnPolicy ?? 'full';
-      const windowDays = product?.returnWindowDays ?? 7;
-      const releaseLine = policy === 'full'
-        ? `  paid out ${windowDays} day${windowDays === 1 ? '' : 's'} after delivery `
-          + `(${windowDays}-day refund window)`
-        : `  paid out at delivery (${policy === 'none'
-            ? 'no return or replacement'
-            : 'replacement only, no refund'})`;
-
-      const ok = window.confirm(
-        `Publish "${productName}" with these rules?\n\n`
-        + `MARGIN BANDS — what an investor earns\n${lines}\n\n`
-        + `RETURN WINDOW — when the vendor and investor are paid\n${releaseLine}\n\n`
-        + (product?.usesDefaultBands || product?.usesDefaultReturnPolicy
-          ? 'Some of these are the platform defaults. To change them for this '
-            + 'product alone, open Edit and set them in the Admin Pricing panel '
-            + 'before approving.'
-          : 'These rules are set on this product.')
-      );
-      if (!ok) return;
-    }
+    const ok = window.confirm(
+      `Publish "${productName}"?\n\nReturn window: ${releaseLine}\n\nContinue?`
+    );
+    if (!ok) return;
 
     setApprovalLoading(productId);
     try {
@@ -1025,34 +996,6 @@ export default function AdminProductsPage() {
                     <div className="absolute bottom-2 left-2">
                       <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
                         {product.marginPct}% margin
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Margin band — what an investor earns on this product, and
-                      the days that decide it. Phase 16 skipped this column
-                      because rendering it meant duplicating the investor sales
-                      aggregation; it is two fields on the document now. */}
-                  {product.marginCategory && product.marginBands && (
-                    <div className="absolute top-2 left-2">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold text-white ${
-                          product.marginCategory === 'high'
-                            ? 'bg-amber-600'
-                            : product.marginCategory === 'medium'
-                              ? 'bg-emerald-600'
-                              : 'bg-slate-600'
-                        }`}
-                        title={
-                          `${product.marginCategory} margin — investor earns `
-                          + `${product.marginBands[product.marginCategory].pct}% `
-                          + (product.usesDefaultBands
-                            ? '(platform default rules)'
-                            : '(rules set on this product)')
-                        }
-                      >
-                        {product.marginCategory} · {product.marginBands[product.marginCategory].pct}%
-                        {product.usesDefaultBands ? '' : ' ★'}
                       </span>
                     </div>
                   )}

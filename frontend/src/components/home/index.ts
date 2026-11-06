@@ -1,4 +1,5 @@
 export { HeroSlider } from "./HeroSlider";
+export { CategorySection } from "./CategorySection";
 export { PopularProducts } from "./PopularProducts";
 export { TrendingProducts } from "./TrendingProducts";
 export { NewProducts } from "./NewProducts";

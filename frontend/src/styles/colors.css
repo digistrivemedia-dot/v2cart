@@ -11,10 +11,10 @@
   --color-secondary-light: #f5f5f5;
   --color-secondary-dark: #e0e0e0;
 
-  /* Accent colors */
-  --color-accent: #7c3aed; /* violet-600 */
-  --color-accent-light: #a78bfa; /* violet-400 */
-  --color-accent-dark: #6d28d9; /* violet-700 */
+  /* Accent colors — V2Cart brand blue (from cart icon) */
+  --color-accent: #0096C7;
+  --color-accent-light: #00B4D8;
+  --color-accent-dark: #0077A3;
 
   /* Status colors */
   --color-success: #22c55e;

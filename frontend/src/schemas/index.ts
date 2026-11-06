@@ -60,36 +60,6 @@ export const ValidateCouponSchema = z.object({
   orderAmount: z.number().optional(),
 });
 
-/**
- * One margin band: "sells within `days` -> the investor earns `pct`".
- *
- * Set per PRODUCT, by admin, at approval (Phase 20). Categories used to carry
- * sell-speed windows and a margin % per tier; that was the wrong grain — two
- * phones want different numbers — so both moved onto the product.
- *
- * `high` is the SLOWEST, best-paying band: the name tracks the percentage, not
- * the speed. See backend/utils/marginBands.js, which owns every rule about
- * these numbers.
- */
-export const MarginBandSchema = z.object({
-  days: z.number().nullable().optional(),
-  pct: z.number().nullable().optional(),
-});
-
-/**
- * A product's three bands. All six numbers or none — a half-filled set would
- * mix the product's values with the platform defaults and silently pay the
- * wrong percentage.
- */
-export const MarginBandsSchema = z.object({
-  low: MarginBandSchema,
-  medium: MarginBandSchema,
-  high: MarginBandSchema,
-});
-
-/** Which band a product currently sits in. Exactly one at a time. */
-export const MarginCategorySchema = z.enum(["low", "medium", "high"]);
-
 // Phase 21 — the return rules, and the reason settlement is not instant.
 //
 // `full` is the only one that holds money: a replacement costs the vendor a
@@ -145,9 +115,6 @@ export const ProductPricingSchema = z.object({
   vendorPrice: z.number().nullable().optional(),
   /** Per-product margin override; null means "follow the global margin". */
   marginPct: z.number().nullable().optional(),
-  investorPrice: z.number().nullable().optional(),
-  investorPayout: z.number().nullable().optional(),
-  investableUnits: z.number().nullable().optional(),
   pricingStatus: z.enum(["pending_pricing", "priced"]),
   listingStatus: z.enum(["draft", "pending_approval", "live", "rejected", "paused"]),
   returnPolicy: ReturnPolicySchema.nullable().optional(),
@@ -163,21 +130,11 @@ export const ProductPricingSchema = z.object({
 export const UpdateProductPricingSchema = z.object({
   price: z.number().positive("Customer price must be positive"),
   marginPct: z.number().min(0, "Margin cannot be negative").nullable().optional(),
-  investableUnits: z.number().min(0).nullable().optional(),
-  // Omit to leave stored bands alone; send a complete set to replace them, or
-  // an empty object to fall back to the platform defaults.
-  marginBands: MarginBandsSchema.nullable().optional(),
-  marginCategory: MarginCategorySchema.nullable().optional(),
 }).merge(ReturnPolicyFieldsSchema);
 
 export const UpdateListingStatusSchema = z.object({
   listingStatus: z.enum(["draft", "pending_approval", "live", "rejected", "paused"]),
   rejectionNote: z.string().max(500).nullable().optional(),
-  // Approval is where admin decides what investors earn on this product, so
-  // the bands and the starting band ride along with the status change — and
-  // since Phase 21, how long its money is held after delivery.
-  marginBands: MarginBandsSchema.nullable().optional(),
-  marginCategory: MarginCategorySchema.nullable().optional(),
 }).merge(ReturnPolicyFieldsSchema);
 
 export type ProductWithVariants = any;

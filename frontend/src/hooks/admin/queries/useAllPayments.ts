@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ADMIN_QUERY_KEYS } from "../keys";
 import { getApiUrl } from "@/lib/utils/api";
 
-export type PaymentRole = "customer" | "vendor" | "investor";
+export type PaymentRole = "customer" | "vendor";
 
 export interface Payment {
   id: string;

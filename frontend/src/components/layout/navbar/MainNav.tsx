@@ -192,8 +192,8 @@ export const MainNav = () => {
         </div>
       </nav>
 
-      {/* ─── MOBILE HAMBURGER BAR ─── */}
-      <div className="lg:hidden bg-gradient-to-r from-slate-800 via-slate-700 to-gray-800 border-t border-slate-600/50">
+      {/* ─── MOBILE HAMBURGER BAR — hidden; bottom nav handles mobile navigation ─── */}
+      <div className="hidden lg:hidden bg-gradient-to-r from-slate-800 via-slate-700 to-gray-800 border-t border-slate-600/50">
         <div className="flex items-center justify-between px-4 py-3">
           <span className="text-white text-sm font-semibold tracking-wide">Browse Categories</span>
           <button

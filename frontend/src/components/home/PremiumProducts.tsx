@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -62,16 +62,16 @@ export const PremiumProducts = async () => {
 
     if (products.length === 0) {
         return (
-            <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
-                <div className="mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
+            <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div className="mb-4">
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-800">
                         Premium Products
                     </h2>
-                    <p className="text-slate-600 text-lg">
+                    <p className="text-xs text-slate-500">
                         Luxury and premium quality collections
                     </p>
                 </div>
-                <div className="text-center py-12 bg-slate-50 rounded-2xl">
+                <div className="text-center py-12 bg-slate-50 rounded-xl">
                     <p className="text-slate-600">No premium products available yet. Add products with the &apos;premium&apos; tag to see them here.</p>
                 </div>
             </section>
@@ -79,34 +79,34 @@ export const PremiumProducts = async () => {
     }
 
     return (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+        <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             {/* Header */}
-            <div className="flex justify-between items-end mb-12">
+            <div className="flex justify-between items-center mb-4">
                 <div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-800">
                         Premium Products
                     </h2>
-                    <p className="text-slate-600 text-lg">
+                    <p className="text-xs text-slate-500">
                         Luxury and premium quality collections
                     </p>
                 </div>
                 <Link
                     href="/search?tags=premium"
-                    className="hidden md:block text-yellow-500 hover:text-yellow-600 font-semibold transition-colors"
+                    className="hidden md:block text-brand-blue hover:text-brand-blue-light font-semibold transition-colors"
                 >
                     View All →
                 </Link>
             </div>
 
             {/* Products Grid - 4 columns × 2 rows */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                 {products.map((product: any) => (
                     <div
                         key={product._id}
-                        className="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-200 hover:-translate-y-2"
+                        className="group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-slate-100 hover:border-brand-blue/30"
                     >
                         {/* Image Container */}
-                        <div className="relative h-64 overflow-hidden bg-gray-100">
+                        <div className="relative aspect-square overflow-hidden bg-gray-50">
                             <Image
                                 src={product.image}
                                 alt={product.name}
@@ -130,20 +130,20 @@ export const PremiumProducts = async () => {
                         </div>
 
                         {/* Content */}
-                        <div className="p-5">
+                        <div className="p-3">
                             {/* Category */}
                             <p className="text-xs text-gray-500 mb-2 uppercase tracking-wide">
                                 {product.category}
                             </p>
 
                             {/* Product Name */}
-                            <h3 className="font-semibold text-lg text-slate-900 mb-3 line-clamp-2 min-h-[3.5rem] group-hover:text-yellow-500 transition-colors">
+                            <h3 className="font-semibold text-sm text-slate-800 mb-2 line-clamp-2 min-h-[3.5rem] group-hover:text-brand-blue transition-colors">
                                 {product.name}
                             </h3>
 
                             {/* Price */}
                             <div className="flex items-center gap-2 mb-4">
-                                <p className="text-2xl font-bold text-yellow-600">
+                                <p className="text-base font-bold text-slate-900">
                                     {product.price === 0 ? 'Get Price' : `₹${product.price.toLocaleString('en-IN')}`}
                                 </p>
                                 {product.price > 0 && product.cuttedPrice && product.cuttedPrice > product.price && (
@@ -156,7 +156,7 @@ export const PremiumProducts = async () => {
                             {/* View Details Button */}
                             <Link
                                 href={`/product/${product.slug}`}
-                                className="block w-full text-center px-4 py-3 bg-slate-900 text-white font-semibold rounded-lg hover:bg-yellow-500 hover:text-slate-900 transition-all duration-300 shadow-md hover:shadow-lg"
+                                className="block w-full text-center px-4 py-3 bg-slate-900 text-white font-semibold rounded-lg hover:bg-brand-gold hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
                             >
                                 View Details
                             </Link>
@@ -169,7 +169,7 @@ export const PremiumProducts = async () => {
             <div className="mt-8 text-center md:hidden">
                 <Link
                     href="/search?tags=premium"
-                    className="inline-block px-8 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                    className="inline-block px-8 py-3 bg-brand-gold hover:bg-brand-gold-light text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
                 >
                     View All Premium Products
                 </Link>

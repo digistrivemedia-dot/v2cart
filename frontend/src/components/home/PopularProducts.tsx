@@ -3,6 +3,15 @@
 import Link from "next/link";
 import { HomeProductCard } from "./HomeProductCard";
 
+// Temporary dummy data — remove once real products are tagged 'popular' in the DB
+const DUMMY_PRODUCTS = [
+  { _id: "d1", name: "Samsung Galaxy S24 5G", category: "Mobiles",     image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400", price: 74999, cuttedPrice: 89999, slug: "samsung-galaxy-s24" },
+  { _id: "d2", name: "boAt Rockerz 450 Bluetooth Headphones", category: "Electronics", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400", price: 1499,  cuttedPrice: 2999,  slug: "boat-rockerz-450" },
+  { _id: "d3", name: "Apple Watch Series 9", category: "Electronics",  image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400", price: 39900, cuttedPrice: 45900, slug: "apple-watch-series-9" },
+  { _id: "d4", name: "Nike Running Shoes", category: "Fashion",        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400", price: 4499,  cuttedPrice: 7999,  slug: "nike-running-shoes" },
+  { _id: "d5", name: "Portable Power Bank 20000mAh", category: "Electronics", image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400", price: 1299,  cuttedPrice: 1999,  slug: "power-bank-20000" },
+];
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000/api/v1';
 
 async function getPopularProducts() {
@@ -85,59 +94,29 @@ async function getPopularProducts() {
 export const PopularProducts = async () => {
     const products = await getPopularProducts();
 
-    if (products.length === 0) {
-        return (
-            <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
-                <div className="mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
-                        Popular Products
-                    </h2>
-                    <p className="text-slate-600 text-lg">
-                        Customer favorites and best-sellers
-                    </p>
-                </div>
-                <div className="text-center py-12 bg-slate-50 rounded-2xl">
-                    <p className="text-slate-600">No popular products available yet. Add products with the 'popular' tag to see them here.</p>
-                </div>
-            </section>
-        );
-    }
+    const displayProducts = products.length > 0 ? products : DUMMY_PRODUCTS;
 
     return (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
-            {/* Header */}
-            <div className="flex justify-between items-end mb-12">
+        <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            {/* Section header */}
+            <div className="flex justify-between items-center mb-4">
                 <div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
-                        Popular Products
-                    </h2>
-                    <p className="text-slate-600 text-lg">
-                        Customer favorites and best-sellers
-                    </p>
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-800">Deal of the Day</h2>
+                    <p className="text-xs text-slate-500">Limited time offers on top products</p>
                 </div>
                 <Link
                     href="/search?tags=popular"
-                    className="hidden md:block text-yellow-500 hover:text-yellow-600 font-semibold transition-colors"
+                    className="text-brand-blue hover:text-brand-blue-light text-sm font-semibold transition-colors"
                 >
                     View All →
                 </Link>
             </div>
 
-            {/* Products Grid - 4 columns × 2 rows */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {products.map((product: any) => (
+            {/* Products grid — 2 cols mobile, 4–5 cols desktop */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+                {displayProducts.map((product: any) => (
                     <HomeProductCard key={product._id} product={product} />
                 ))}
-            </div>
-
-            {/* View All Mobile */}
-            <div className="mt-8 text-center md:hidden">
-                <Link
-                    href="/search?tags=popular"
-                    className="inline-block px-8 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
-                >
-                    View All Popular Products
-                </Link>
             </div>
         </section>
     );

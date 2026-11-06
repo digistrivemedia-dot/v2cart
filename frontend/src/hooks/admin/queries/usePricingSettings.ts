@@ -10,16 +10,6 @@ import { getApiUrl } from "@/lib/utils/api";
 export type PricingSettings = {
   marginPct: number;
   gstPct: number;
-  /**
-   * The margin bands a product uses when admin sets none of its own. Unlike
-   * marginPct these never touch a customer's price or a vendor's net — they
-   * only decide what an investor earns, by how long their unit took to sell.
-   */
-  defaultMarginBands?: Record<"low" | "medium" | "high", { days: number; pct: number }>;
-  /**
-   * Phase 21 — the return rules a product falls back to, and so when the
-   * vendor and the investor are paid. `full` is the only one that holds money.
-   */
   defaultReturnPolicy?: "full" | "replacement_only" | "none";
   defaultReturnWindowDays?: number;
 };
@@ -27,14 +17,6 @@ export type PricingSettings = {
 const DEFAULT_SETTINGS: PricingSettings = {
   marginPct: 0,
   gstPct: 0,
-  // Mirrors DEFAULT_MARGIN_BANDS in backend/utils/marginBands.js, and only
-  // used before the real settings land.
-  defaultMarginBands: {
-    low: { days: 10, pct: 5 },
-    medium: { days: 15, pct: 10 },
-    high: { days: 90, pct: 15 },
-  },
-  // Mirrors DEFAULT_RETURN_* in backend/utils/returnPolicy.js.
   defaultReturnPolicy: "full",
   defaultReturnWindowDays: 7,
 };

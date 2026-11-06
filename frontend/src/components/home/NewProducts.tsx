@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import Link from "next/link";
 import { HomeProductCard } from "./HomeProductCard";
@@ -63,16 +63,16 @@ export const NewProducts = async () => {
 
     if (products.length === 0) {
         return (
-            <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
-                <div className="mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
+            <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div className="mb-4">
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-800">
                         New Products
                     </h2>
-                    <p className="text-slate-600 text-lg">
+                    <p className="text-xs text-slate-500">
                         Fresh arrivals and latest collections
                     </p>
                 </div>
-                <div className="text-center py-12 bg-slate-50 rounded-2xl">
+                <div className="text-center py-12 bg-slate-50 rounded-xl">
                     <p className="text-slate-600">No new products available yet. Add products with the &apos;new&apos; tag to see them here.</p>
                 </div>
             </section>
@@ -80,27 +80,27 @@ export const NewProducts = async () => {
     }
 
     return (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+        <section className="py-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
             {/* Header */}
-            <div className="flex justify-between items-end mb-12">
+            <div className="flex justify-between items-center mb-4">
                 <div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-3">
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-800">
                         New Products
                     </h2>
-                    <p className="text-slate-600 text-lg">
+                    <p className="text-xs text-slate-500">
                         Fresh arrivals and latest collections
                     </p>
                 </div>
                 <Link
                     href="/search?tags=new"
-                    className="hidden md:block text-yellow-500 hover:text-yellow-600 font-semibold transition-colors"
+                    className="hidden md:block text-brand-blue hover:text-brand-blue-light font-semibold transition-colors"
                 >
                     View All →
                 </Link>
             </div>
 
             {/* Products Grid - 4 columns × 2 rows */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                 {products.map((product: any) => (
                     <HomeProductCard key={product._id} product={product} />
                 ))}
@@ -110,7 +110,7 @@ export const NewProducts = async () => {
             <div className="mt-8 text-center md:hidden">
                 <Link
                     href="/search?tags=new"
-                    className="inline-block px-8 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                    className="inline-block px-8 py-3 bg-brand-gold hover:bg-brand-gold-light text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
                 >
                     View All New Products
                 </Link>

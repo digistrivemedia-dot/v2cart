@@ -4,6 +4,7 @@
 // single visit to the home page.
 import {
   HeroSlider,
+  CategorySection,
   PopularProducts,
   TrendingProducts,
   NewProducts,
@@ -18,9 +19,12 @@ import {
 
 const Home = async () => {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-white">
       {/* Hero Slider */}
       <HeroSlider />
+
+      {/* Category Icons */}
+      <CategorySection />
 
       {/* Popular Products */}
       <PopularProducts />

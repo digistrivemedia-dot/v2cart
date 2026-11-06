@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
                             </p>
                             <ul className="list-disc list-inside text-slate-600 space-y-2 ml-4 mb-4">
                                 <li>Register for an account</li>
-                                <li>Place an order, list a product as a vendor, or fund a product as an investor</li>
+                                <li>Place an order or list a product as a vendor</li>
                                 <li>Subscribe to our newsletter</li>
                                 <li>Contact our customer support</li>
                                 <li>Participate in surveys or promotions</li>

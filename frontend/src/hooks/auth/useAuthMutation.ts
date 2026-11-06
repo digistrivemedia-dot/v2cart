@@ -41,9 +41,6 @@ export const useAuthMutation = () => {
       } else if (user?.role === 'vendor') {
         toast.success("Welcome back!");
         router.push("/vendor");
-      } else if (user?.role === 'investor') {
-        toast.success("Welcome back!");
-        router.push("/investor");
       } else {
         toast.success("Login successful!");
         router.push("/");
@@ -74,15 +71,13 @@ export const useAuthMutation = () => {
       gender,
       role,
       vendorProfile,
-      investorProfile,
     }: {
       email: string;
       password: string;
       name: string;
       gender?: string;
-      role?: 'vendor' | 'investor';
+      role?: 'vendor';
       vendorProfile?: { businessName?: string; gstNumber?: string; payoutDetails?: Record<string, string | undefined> };
-      investorProfile?: { payoutDetails?: Record<string, string | undefined> };
     }) => {
       const result = await authClient.signUp.email({
         email,
@@ -91,7 +86,6 @@ export const useAuthMutation = () => {
         gender,
         role,
         vendorProfile,
-        investorProfile,
         callbackURL: "/",
       });
 
@@ -104,7 +98,7 @@ export const useAuthMutation = () => {
     onSuccess: (result) => {
       const user = result.data as any;
 
-      if (user?.role === 'vendor' || user?.role === 'investor') {
+      if (user?.role === 'vendor') {
         toast.success("Account created! It's pending admin approval before you can start.");
         router.push("/login");
       } else {

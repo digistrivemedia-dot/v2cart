@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   // Protect admin/vendor routes at the edge (basic cookie-presence check —
   // RoleGuard does the real role check client-side, and every API route is
   // independently enforced server-side regardless of what the client sends).
-  if (pathname.startsWith('/admin') || pathname.startsWith('/vendor') || pathname.startsWith('/investor')) {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/vendor')) {
     // Check if user has auth token (basic check)
     // Note: For proper security, you should verify the token and role on the server
     const token = request.cookies.get('token')?.value;
@@ -27,6 +27,5 @@ export const config = {
   matcher: [
     '/admin/:path*',
     '/vendor/:path*',
-    '/investor/:path*',
   ],
 };

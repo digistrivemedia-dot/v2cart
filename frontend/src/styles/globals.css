@@ -269,24 +269,25 @@ main {
 
 @layer base {
   :root {
+    /* V2Cart brand blue: hsl(199 100% 39%) ≈ #0096C7 */
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-foreground: 220 25% 18%;
+    --sidebar-primary: 199 100% 39%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 199 60% 93%;
+    --sidebar-accent-foreground: 199 100% 25%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 199 100% 39%;
   }
 
   .dark {
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 220 40% 13%;
+    --sidebar-foreground: 220 15% 90%;
+    --sidebar-primary: 199 100% 39%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 220 35% 20%;
+    --sidebar-accent-foreground: 220 15% 90%;
+    --sidebar-border: 220 35% 20%;
+    --sidebar-ring: 199 100% 39%;
   }
 }

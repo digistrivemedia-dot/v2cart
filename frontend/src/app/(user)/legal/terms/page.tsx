@@ -17,7 +17,7 @@ export default function TermsAndConditions() {
                             </p>
                             <p className="text-slate-600 leading-relaxed">
                                 These terms apply to all visitors, users, and customers who access or use our marketplace platform, including
-                                buyers, vendors, and investors.
+                                buyers and vendors.
                             </p>
                         </section>
 
@@ -138,14 +138,13 @@ export default function TermsAndConditions() {
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-semibold text-slate-800 mb-4">9. Vendors and Investors</h2>
+                            <h2 className="text-2xl font-semibold text-slate-800 mb-4">9. Vendors</h2>
                             <p className="text-slate-600 leading-relaxed mb-4">
-                                In addition to the terms above, vendors and investors using their respective dashboards agree to:
+                                In addition to the terms above, vendors using the vendor dashboard agree to:
                             </p>
                             <ul className="list-disc list-inside text-slate-600 space-y-2 ml-4">
                                 <li>Provide accurate business/payout details during registration</li>
-                                <li>List only products they are authorized to sell (vendors)</li>
-                                <li>Understand that investment returns are not guaranteed and depend on product sales (investors)</li>
+                                <li>List only products they are authorized to sell</li>
                                 <li>Comply with all applicable platform approval processes</li>
                             </ul>
                         </section>

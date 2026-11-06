@@ -36,9 +36,8 @@ interface SignUpParams {
   password: string;
   gender?: string;
   callbackURL?: string;
-  role?: 'vendor' | 'investor';
+  role?: 'vendor';
   vendorProfile?: { businessName?: string; gstNumber?: string; payoutDetails?: PayoutDetails };
-  investorProfile?: { payoutDetails?: PayoutDetails };
 }
 
 /**
@@ -123,7 +122,6 @@ export const authClient = {
             gender: params.gender || 'other',
             role: params.role,
             vendorProfile: params.vendorProfile,
-            investorProfile: params.investorProfile,
           }),
         });
 

@@ -7,7 +7,7 @@ import { MdError } from "react-icons/md";
 import { useAuthMutation } from "@/hooks/auth";
 import { FormEvent, useRef, useState } from "react";
 
-type AccountType = "customer" | "vendor" | "investor";
+type AccountType = "customer" | "vendor";
 
 const inputClass =
   "w-full px-4 py-2.5 bg-black/40 border border-zinc-700 rounded-xl text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500/50 transition-all duration-200 font-light text-sm";
@@ -85,7 +85,6 @@ const Register = () => {
                   {([
                     { value: "customer", label: "Customer" },
                     { value: "vendor", label: "Vendor" },
-                    { value: "investor", label: "Investor" },
                   ] as const).map((option) => (
                     <button
                       key={option.value}
@@ -102,9 +101,9 @@ const Register = () => {
                     </button>
                   ))}
                 </div>
-                {accountType !== "customer" && (
+                {accountType === "vendor" && (
                   <p className="text-xs text-zinc-500 mt-1 font-light ml-1">
-                    {accountType === "vendor" ? "Vendor" : "Investor"} accounts need admin approval before you can {accountType === "vendor" ? "list products" : "invest"}.
+                    Vendor accounts need admin approval before you can list products.
                   </p>
                 )}
               </div>

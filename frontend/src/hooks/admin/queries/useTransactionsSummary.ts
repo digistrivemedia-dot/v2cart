@@ -4,8 +4,6 @@ import { getApiUrl } from "@/lib/utils/api";
 
 type Totals = {
   vendorPayouts: number;
-  investorInvested: number;
-  investorPayouts: number;
   platformProfit: number;
 };
 
@@ -41,8 +39,6 @@ export const useTransactionsSummary = (from?: string, to?: string) => {
     ...query,
     totals: query.data?.totals ?? {
       vendorPayouts: 0,
-      investorInvested: 0,
-      investorPayouts: 0,
       platformProfit: 0,
     },
     breakdown: query.data?.breakdown ?? [],

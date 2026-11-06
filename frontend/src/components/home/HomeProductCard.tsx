@@ -50,101 +50,78 @@ export const HomeProductCard = ({ product }: HomeProductCardProps) => {
         setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
     };
 
+    const discountPct =
+        product.cuttedPrice && product.cuttedPrice > product.price
+            ? Math.round(((product.cuttedPrice - product.price) / product.cuttedPrice) * 100)
+            : null;
+
     return (
-            <div className="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-slate-200 hover:-translate-y-2">
-                {/* Image Container */}
-                <div className="relative h-64 overflow-hidden bg-gray-100">
-                    <Image
-                        src={allImages[currentImageIndex]}
-                        alt={product.name}
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
+        <Link href={`/product/${product.slug}`} className="group block bg-white rounded-xl border border-slate-100 hover:border-brand-blue/30 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+            {/* Image */}
+            <div className="relative aspect-square overflow-hidden bg-gray-50">
+                <Image
+                    src={allImages[currentImageIndex]}
+                    alt={product.name}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
 
-                    {/* Image Navigation Arrows - Show only if multiple images */}
-                    {allImages.length > 1 && (
-                        <>
-                            <button
-                                onClick={handlePrevImage}
-                                className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20"
-                            >
-                                ‹
-                            </button>
-                            <button
-                                onClick={handleNextImage}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20"
-                            >
-                                ›
-                            </button>
-                            {/* Image Indicators */}
-                            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-20">
-                                {allImages.map((_, index) => (
-                                    <div
-                                        key={index}
-                                        className={`w-1.5 h-1.5 rounded-full transition-all ${
-                                            index === currentImageIndex
-                                                ? 'bg-white w-3'
-                                                : 'bg-white/50'
-                                        }`}
-                                    />
-                                ))}
-                            </div>
-                        </>
-                    )}
-
-                    {/* Wishlist Badge - Top Right */}
-                    <div className="absolute top-3 right-3 z-10">
-                        <WishlistButton productId={product._id} />
-                    </div>
-
-                    {/* Discount Badge - Top Left */}
-                    {product.cuttedPrice && product.cuttedPrice > product.price && (
-                        <div className="absolute top-3 left-3 z-10">
-                            <span className="px-3 py-1.5 bg-red-500 text-white text-xs font-bold rounded-full shadow-lg">
-                                {Math.round(((product.cuttedPrice - product.price) / product.cuttedPrice) * 100)}% OFF
-                            </span>
-                        </div>
-                    )}
+                {/* Wishlist */}
+                <div className="absolute top-2 right-2 z-10" onClick={(e) => e.preventDefault()}>
+                    <WishlistButton productId={product._id} />
                 </div>
 
-                {/* Content */}
-                <div className="p-5">
-                    {/* Category */}
-                    <p className="text-xs text-gray-500 mb-2 uppercase tracking-wide">
-                        {product.category}
-                    </p>
+                {/* Discount badge */}
+                {discountPct && (
+                    <div className="absolute top-2 left-2 z-10">
+                        <span className="px-2 py-0.5 bg-red-500 text-white text-[10px] font-bold rounded">
+                            {discountPct}% OFF
+                        </span>
+                    </div>
+                )}
 
-                    {/* Product Name */}
-                    <h3 className="font-semibold text-lg text-slate-900 mb-3 line-clamp-2 min-h-[3.5rem] group-hover:text-yellow-500 transition-colors">
-                        {product.name}
-                    </h3>
+                {/* Image nav arrows (multi-image) */}
+                {allImages.length > 1 && (
+                    <>
+                        <button
+                            onClick={(e) => { e.preventDefault(); handlePrevImage(e); }}
+                            className="absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-black/40 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 text-xs"
+                        >‹</button>
+                        <button
+                            onClick={(e) => { e.preventDefault(); handleNextImage(e); }}
+                            className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-black/40 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20 text-xs"
+                        >›</button>
+                    </>
+                )}
+            </div>
 
-                    {/* Price */}
-                    <div className="flex items-center gap-2 mb-4">
-                        {product.price === 0 ? (
-                            <p className="text-2xl font-bold text-yellow-600">Get Price</p>
-                        ) : (
+            {/* Info */}
+            <div className="p-3">
+                <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">{product.category}</p>
+                <h3 className="text-sm font-medium text-slate-800 line-clamp-2 leading-snug mb-2 min-h-[2.5rem] group-hover:text-brand-blue transition-colors">
+                    {product.name}
+                </h3>
+
+                {product.price === 0 ? (
+                    <p className="text-base font-bold text-brand-gold">Contact for Price</p>
+                ) : (
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                        <span className="text-base font-bold text-slate-900">
+                            ₹{product.price.toLocaleString("en-IN")}
+                        </span>
+                        {product.cuttedPrice && product.cuttedPrice > product.price && (
                             <>
-                                <p className="text-2xl font-bold text-yellow-600">
-                                    ₹{product.price.toLocaleString('en-IN')}
-                                </p>
-                                {product.cuttedPrice && product.cuttedPrice > product.price && (
-                                    <p className="text-sm text-gray-400 line-through">
-                                        ₹{product.cuttedPrice.toLocaleString('en-IN')}
-                                    </p>
-                                )}
+                                <span className="text-xs text-gray-400 line-through">
+                                    ₹{product.cuttedPrice.toLocaleString("en-IN")}
+                                </span>
+                                <span className="text-xs font-semibold text-green-600">
+                                    {discountPct}% off
+                                </span>
                             </>
                         )}
                     </div>
-
-                    {/* View Details Button */}
-                    <Link
-                        href={`/product/${product.slug}`}
-                        className="block w-full text-center px-4 py-3 bg-slate-900 text-white font-semibold rounded-lg hover:bg-yellow-500 hover:text-slate-900 transition-all duration-300 shadow-md hover:shadow-lg"
-                    >
-                        View Details
-                    </Link>
-                </div>
+                )}
             </div>
+        </Link>
     );
 };

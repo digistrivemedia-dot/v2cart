@@ -11,19 +11,28 @@ const defaultSlides = [
   {
     id: 1,
     mediaType: "image" as const,
-    image: { url: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2000" },
-    title: "Infinite Potential. Zero Risk.",
-    subtitle: "Buy, sell, and invest — all in one marketplace built for vendors, investors, and customers.",
-    ctaText: "Explore Collection",
+    image: { url: "/banner1.png" },
+    title: "Big Savings\nBigger Happiness",
+    subtitle: "Best prices on top brands — delivered fast.",
+    ctaText: "Shop Now",
     ctaLink: "/search",
   },
   {
     id: 2,
     mediaType: "image" as const,
-    image: { url: "https://images.unsplash.com/photo-1607082349566-187342175e2f?q=80&w=2000" },
-    title: "Your Trusted Marketplace",
-    subtitle: "Wide range. Competitive pricing. Trusted vendors. Everything you need, in one place.",
-    ctaText: "Explore Collection",
+    image: { url: "/banner2.png" },
+    title: "Your Trusted\nMarketplace",
+    subtitle: "Wide range. Competitive pricing. Fast delivery.",
+    ctaText: "Shop Now",
+    ctaLink: "/search",
+  },
+  {
+    id: 3,
+    mediaType: "image" as const,
+    image: { url: "/banner3.png" },
+    title: "Click. Cart.\nCelebrate.",
+    subtitle: "Thousands of products, one seamless experience.",
+    ctaText: "Explore Now",
     ctaLink: "/search",
   },
 ];
@@ -48,23 +57,12 @@ export const HeroSlider = () => {
   const [loading, setLoading] = useState(true);
   const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
 
-  // Fetch sliders on mount
+  // Fetch sliders on mount — fall back to local banners silently
   useEffect(() => {
-    const fetchSliders = async () => {
-      try {
-        const sliders = await getAllSliders();
-        if (sliders && sliders.length > 0) {
-          setSlides(sliders);
-        }
-      } catch (error) {
-        console.error("Error fetching sliders:", error);
-        // Keep default slides on error
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSliders();
+    getAllSliders()
+      .then((sliders) => { if (sliders?.length > 0) setSlides(sliders); })
+      .catch(() => {/* keep default slides */})
+      .finally(() => setLoading(false));
   }, []);
 
   // Auto-play slider
@@ -117,19 +115,22 @@ export const HeroSlider = () => {
   };
 
   if (loading) {
-    return <div className="h-screen w-screen bg-slate-100 animate-pulse" />;
+    return <div className="h-52 sm:h-64 w-full bg-slate-200 animate-pulse rounded-xl" />;
   }
 
   return (
-    <section className="relative h-screen w-screen overflow-hidden bg-white -mx-12 sm:-mx-12 lg:-mx-12 xl:-mx-12" style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw', maxWidth: '100vw' }}>
+    /* White margin wrapper — gives the 2px breathing room + rounded corners */
+    <div className="px-2 pt-2">
+    <section
+      className="relative h-52 sm:h-64 md:h-72 overflow-hidden rounded-2xl"
+    >
       {/* Slides */}
       {slides.map((slide, index) => {
         const slideId = slide._id || slide.id;
         return (
           <div
             key={slideId}
-            className={`absolute inset-0 transition-opacity duration-700 ${index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
-              }`}
+            className={`absolute inset-0 transition-opacity duration-700 ${index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"}`}
           >
             {/* Background Media */}
             <div className="absolute inset-0">
@@ -142,7 +143,7 @@ export const HeroSlider = () => {
                     className="object-cover"
                     priority={index === 0}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-slate-900/40 to-slate-900/20" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/55 via-brand-navy/35 to-brand-navy/10" />
                 </>
               ) : slide.mediaType === 'video' && slide.video ? (
                 <>
@@ -155,20 +156,14 @@ export const HeroSlider = () => {
                     playsInline
                     autoPlay={index === currentSlide}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-slate-900/50 to-slate-900/30" />
-
-                  {/* Mute/Unmute Button for Videos */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/55 via-brand-navy/35 to-brand-navy/10" />
                   {index === currentSlide && (
                     <button
                       onClick={toggleMute}
-                      className="absolute top-4 right-4 z-30 bg-black/50 hover:bg-black/70 backdrop-blur-sm p-3 rounded-full transition-colors duration-200"
+                      className="absolute top-3 right-3 z-30 bg-black/40 hover:bg-black/60 p-2 rounded-full transition-colors"
                       aria-label={isMuted ? "Unmute" : "Mute"}
                     >
-                      {isMuted ? (
-                        <FaVolumeMute className="text-white text-xl" />
-                      ) : (
-                        <FaVolumeUp className="text-white text-xl" />
-                      )}
+                      {isMuted ? <FaVolumeMute className="text-white text-sm" /> : <FaVolumeUp className="text-white text-sm" />}
                     </button>
                   )}
                 </>
@@ -176,85 +171,60 @@ export const HeroSlider = () => {
             </div>
 
             {/* Content */}
-            <div className="relative h-full w-full px-4 sm:px-6 lg:px-12 xl:px-16 flex items-center">
-              <div className="max-w-2xl">
-                <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight animate-fade-in drop-shadow-lg">
+            <div className="relative h-full w-full px-6 sm:px-10 lg:px-16 flex items-center">
+              <div>
+                <p className="text-brand-gold text-xs sm:text-sm font-semibold uppercase tracking-widest mb-1 animate-fade-in">
+                  Upto 70% OFF
+                </p>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight mb-3 animate-fade-in drop-shadow whitespace-pre-line">
                   {slide.title}
                 </h1>
-                <p className="text-lg md:text-xl text-gray-200 mb-8 animate-fade-in-delay drop-shadow-md">
-                  {slide.subtitle}
-                </p>
-                <div className="flex flex-wrap gap-4 animate-fade-in-delay-2">
-                  <Link
-                    href={slide.ctaLink}
-                    className="px-8 py-3 bg-brand-gold hover:bg-brand-gold-light text-brand-navy font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-brand-gold/50 hover:scale-105 transform"
-                  >
-                    {slide.ctaText}
-                  </Link>
-                </div>
+                <Link
+                  href={slide.ctaLink}
+                  className="inline-block px-6 py-2 bg-brand-gold hover:bg-brand-gold-light text-white font-bold text-sm rounded-lg transition-all duration-200 shadow-lg hover:scale-105 animate-fade-in-delay"
+                >
+                  {slide.ctaText}
+                </Link>
               </div>
             </div>
           </div>
         );
       })}
 
-      {/* Navigation Arrows */}
+      {/* Nav Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm p-3 rounded-full transition-colors duration-200"
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 backdrop-blur-sm p-2 rounded-full transition-colors"
         aria-label="Previous slide"
       >
-        <FaChevronLeft className="text-white text-xl" />
+        <FaChevronLeft className="text-white text-sm" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm p-3 rounded-full transition-colors duration-200"
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 backdrop-blur-sm p-2 rounded-full transition-colors"
         aria-label="Next slide"
       >
-        <FaChevronRight className="text-white text-xl" />
+        <FaChevronRight className="text-white text-sm" />
       </button>
 
-      {/* Dots Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
+      {/* Dots */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
-              ? "bg-brand-gold w-8"
-              : "bg-white/50 hover:bg-white/75"
-              }`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${index === currentSlide ? "bg-brand-gold w-6" : "bg-white/50 hover:bg-white/75 w-1.5"}`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
 
       <style jsx>{`
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.8s ease-out forwards;
-        }
-
-        .animate-fade-in-delay {
-          opacity: 0;
-          animation: fade-in 0.8s ease-out 0.2s forwards;
-        }
-
-        .animate-fade-in-delay-2 {
-          opacity: 0;
-          animation: fade-in 0.8s ease-out 0.4s forwards;
-        }
+        @keyframes fade-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
+        .animate-fade-in-delay { opacity:0; animation: fade-in 0.6s ease-out 0.2s forwards; }
       `}</style>
     </section>
+    </div>
   );
 };

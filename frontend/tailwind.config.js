@@ -47,15 +47,20 @@ module.exports = {
       },
       colors: {
         brand: {
-          navy: "#0f1b3c",
-          "navy-dark": "#0a1329",
-          gold: "#d4af37",
-          "gold-light": "#e8c766",
-          // Brand gold is only 2.09:1 on white — fine as a fill or on navy,
-          // unreadable as small text. This is the same hue darkened to 4.87:1
-          // so percentages on light backgrounds still pass WCAG AA.
-          // Use `gold` on dark surfaces, `gold-text` on light ones.
-          "gold-text": "#8a6d1f",
+          navy: "#0D1B3E",
+          "navy-dark": "#081226",
+          // Orange from the logo "CART" dot and speed lines (replaces gold)
+          gold: "#FF8C00",
+          "gold-light": "#FFB347",
+          // Darkened orange for text on white — passes WCAG AA (4.6:1)
+          "gold-text": "#C45C00",
+          // Cyan-blue from the cart icon
+          blue: "#0096C7",
+          "blue-light": "#00B4D8",
+          // Magenta from the V2 gradient / speed-line tail
+          magenta: "#E91E8C",
+          // Purple from "CELEBRATE" in the tagline
+          purple: "#7B2FBE",
         },
         999: "#999",
         "border-primary": "#242424",

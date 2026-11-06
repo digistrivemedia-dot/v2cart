@@ -2,15 +2,15 @@
 
 export const config = {
   // App info
-  appName: "InveztIN",
-  appTagline: "Infinite Potential. Zero Risk.",
-  appDescription: "Buy, sell, and invest — all in one marketplace.",
+  appName: "V2Cart",
+  appTagline: "Your Online Marketplace.",
+  appDescription: "Buy and sell — all in one marketplace.",
 
   // Contact — placeholders, swap per deployment
   contact: {
-    email: "support@inveztin.com",
+    email: "support@v2cart.com",
     phone: "+91 90000 00000",
-    instagram: "https://instagram.com/inveztin",
+    instagram: "https://instagram.com/v2cart",
   },
 
   // API

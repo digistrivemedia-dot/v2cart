@@ -11,7 +11,7 @@ import { getApiUrl } from "@/lib/utils/api";
  *
  * `deliveredAt` is set by a manual admin status change, and the return clock
  * starts there. An order that is never marked delivered therefore never
- * matures and never pays its vendor or investor — a silent non-payment whose
+ * matures and never pays its vendor — a silent non-payment whose
  * only symptom is an entry in that second list.
  */
 
@@ -26,7 +26,6 @@ export type HeldLine = {
   deliveredAt: string | null;
   maturesAt: string;
   due: boolean;
-  fundedUnits: number;
 };
 
 export type AwaitingDeliveryMark = {
@@ -103,7 +102,6 @@ export const useReleaseDuePayouts = () => {
       return data as {
         message: string;
         itemsSettled: number;
-        investorsPaid: number;
         paidOut: number;
         errors: { order: string; product: string; error: string }[];
       };

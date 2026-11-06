@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-export type Role = "user" | "vendor" | "investor" | "admin";
+export type Role = "user" | "vendor" | "admin";
 
 interface RoleGuardProps {
   allow: Role[];

@@ -7,11 +7,9 @@
  * `vendor_earning` rows were reporting-only, and every vendor was paid by
  * manual bank transfer with nothing recording what had been settled.
  *
- * They now share the investor wallet and the same RazorpayX withdrawal flow,
- * so this page is deliberately thin — it reads the same endpoints and reuses
- * the same hooks. Two things are NOT here, on purpose: no top-up (a vendor has
- * nothing to deploy capital into) and no capital/earnings split (every rupee a
- * vendor holds is sale proceeds, so one balance is the honest presentation).
+ * Uses the wallet endpoints for withdrawals. No top-up — a vendor has nothing
+ * to deploy capital into. Every rupee a vendor holds is sale proceeds, so one
+ * balance is the honest presentation.
  */
 
 import { useState } from "react";

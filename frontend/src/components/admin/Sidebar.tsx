@@ -17,7 +17,6 @@ import {
   HiCog,
   HiLogout,
   HiOfficeBuilding,
-  HiTrendingUp,
   HiChartBar,
 } from "react-icons/hi";
 
@@ -61,11 +60,6 @@ const sidebarItems = [
     title: "Vendors",
     href: "/admin/vendors",
     icon: HiOfficeBuilding,
-  },
-  {
-    title: "Investors",
-    href: "/admin/investors",
-    icon: HiTrendingUp,
   },
   {
     title: "Reports",
